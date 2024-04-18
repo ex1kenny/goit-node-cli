@@ -36,6 +36,7 @@ async function removeContact(contactId) {
       (contact) => contact.id === contactId
     );
     if (removedIndex === -1) {
+      return null;
     }
     const removedContact = contacts.splice(removedIndex, 1)[0];
     await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
@@ -67,42 +68,4 @@ async function addContact(name, email, phone) {
   }
 }
 
-async function invokeAction({ action, id, name, email, phone }) {
-  try {
-    switch (action) {
-      case "list":
-        const allContacts = await listContacts();
-        console.table(allContacts || null);
-        break;
-
-      case "get":
-        const contact = await getContactById(id);
-        console.log(contact || null);
-        break;
-
-      case "add":
-        const newContact = await addContact(name, email, phone);
-        console.log(newContact || null);
-        break;
-
-      case "remove":
-        const removedContact = await removeContact(id);
-
-        console.log(removedContact || null);
-        break;
-
-      default:
-        console.warn("\x1B[31m Unknown action type!");
-    }
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
-}
-
-export {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  invokeAction,
-};
+export { listContacts, getContactById, removeContact, addContact };
